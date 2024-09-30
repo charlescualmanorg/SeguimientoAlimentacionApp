@@ -7,6 +7,7 @@ yarn-error.log
 bootstrap/compiled.php
 app/storage/
 
+
 # Laravel 5 & Lumen specific
 public/storage
 public/hot
@@ -21,3 +22,5 @@ Homestead.yaml
 Homestead.json
 /.vagrant
 .phpunit.result.cache
+
+.history/
