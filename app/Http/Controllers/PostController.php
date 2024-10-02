@@ -23,7 +23,7 @@ class PostController extends Controller
         // Validar datos del formulario
         $request->validate([
             'content' => 'required|string',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',  // Validar las imágenes
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',  // Validar las imágenes
         ]);
 
         // Crear el post
@@ -37,12 +37,35 @@ class PostController extends Controller
             foreach ($request->file('images') as $image) {
                 // Almacenar la imagen
                 $imagePath = $image->store('posts', 'public');
-
+                
                 // Optimizar la imagen
-                $img = InterventionImage::make(storage_path("app/public/{$imagePath}"))->resize(800, 800, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
+                //se agrego orientate para que prevalezca la orientacion de fotografias iphone
+                $img = InterventionImage::make(storage_path("app/public/{$imagePath}"))->orientate();
+                
+                if ($image->getSize() > 2000000) {
+                    // Determinar la orientación de la imagen
+                    $width = $img->width();
+                    $height = $img->height();
+        
+                    if ($width > $height) {
+                        // La imagen es Landscape (horizontal), ajustar el ancho a 1200px
+                        $img->resize(1200, null, function ($constraint) {
+                            $constraint->aspectRatio();  // Mantener la proporción
+                            $constraint->upsize();       // Evitar que se agrande si ya es menor
+                        });
+                    } else {
+                        // La imagen es Portrait (vertical), ajustar el alto a 1200px
+                        $img->resize(null, 1200, function ($constraint) {
+                            $constraint->aspectRatio();  // Mantener la proporción
+                            $constraint->upsize();       // Evitar que se agrande si ya es menor
+                        });
+                    }
+        
+                    // Comprimir la imagen al 75% de calidad
+                    $img->encode('jpg', 75);
+                }
+
+
                 $img->save();
 
                 // Guardar la imagen en la base de datos
@@ -101,6 +124,61 @@ class PostController extends Controller
         }
     }
     
+    public function index()
+    {
+        $userId = Auth::id();
+        // Obtener las fechas de publicaciones
+        $dates = Post::selectRaw('DATE(created_at) as date')
+            ->where('user_id', $userId)
+            ->groupBy('date')
+            ->orderBy('date', 'desc')
+            ->get();
+
+        return view('index', compact('dates'));
+    }
+
+    // Método para obtener las publicaciones de una fecha específica
+    public function getPublicationsForDate($date)
+    {
+        //dd($date);
+        try {
+            // Validar el formato de la fecha
+            if (!\Carbon\Carbon::hasFormat($date, 'Y-m-d')) {
+                return response()->json(['error' => 'Formato de fecha inválido. Debe ser Y-m-d.'], 400);
+            }
+    
+            $userId = Auth::id();
+    
+            // Obtener las publicaciones del usuario con las imágenes asociadas
+            $publications = Post::with('images')
+                ->where('user_id', $userId)
+                ->whereDate('created_at', $date)
+                ->get();
+    
+            // Verificar si hay publicaciones
+            if ($publications->isEmpty()) {
+                return response()->json(['message' => 'No se encontraron publicaciones para esta fecha.'], 404);
+            }
+    
+            // Formatear la respuesta
+            $response = $publications->map(function($publication) {
+                return [
+                    'id' => $publication->id,
+                    'content' => $publication->content,
+                    'created_at' => $publication->created_at->format('Y-m-d H:i:s'),
+                    'images' => $publication->images->map(function($image) {
+                        return [
+                            'path' => $image->path,
+                        ];
+                    }),
+                ];
+            });
+    
+            return response()->json($response);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener publicaciones: ' . $e->getMessage()], 500);
+        }
+    }
 
 }
 

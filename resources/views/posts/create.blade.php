@@ -8,6 +8,7 @@
                 <div class="card-header">Crear Publicación</div>
 
                 <div class="card-body">
+ 
                     <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 

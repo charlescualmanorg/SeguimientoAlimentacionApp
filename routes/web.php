@@ -40,4 +40,6 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/posts/{post}/like', [PostController::class, 'like'])->name('posts.like');
     Route::get('/profile', 'ProfileController@show')->name('profile.show');
     Route::put('/profile', 'ProfileController@update')->name('profile.update');
+    Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+    Route::get('/posts/publications/{date}', [PostController::class, 'getPublicationsForDate']);
 });
