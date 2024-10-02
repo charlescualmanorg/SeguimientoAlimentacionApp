@@ -40,7 +40,7 @@
 <script>
  function loadPublications(date) {
     $.ajax({
-        url: 'http://localhost:8000/posts/publications/' + date, // Ajusta esta URL a tu controlador
+        url: '/posts/publications/' + date, // Ajusta esta URL a tu controlador
         method: 'GET',
         success: function(data) {
             $('#publicationsModalLabel').text(date);
