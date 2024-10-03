@@ -92,7 +92,7 @@
                     <a href="/feed">Feed</a>
                     <a href="/posts/create">Post</a>
                     <a href="{{ route('profile.show') }}">Perfil</a>
-                    <a href="{{ route('posts.index') }}">Seguimiento</a>
+                    <a href="{{ route('posts.index') }}">Mi diario</a>
                 </div>
             </div>
         </div>
