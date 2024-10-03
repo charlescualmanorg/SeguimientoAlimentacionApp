@@ -11,7 +11,7 @@
             <div class="col-12 mb-2">
                 <div class="card" style="cursor: pointer;" onclick="loadPublications('{{ $date->date }}')">
                     <div class="card-body">
-                        <h5 class="card-title">{{ \Carbon\Carbon::parse($date->date)->format('l, d F Y') }}</h5>
+                        <h5 class="card-title">{{ \Carbon\Carbon::parse($date->date)->locale('es')->isoFormat('dddd, D MMMM YYYY') }}</h5>
                     </div>
                 </div>
             </div>
@@ -57,7 +57,7 @@
                                 <div class="col-4">
                                     ${
                                         publication.images.length > 0
-                                            ? `<img src="/storage/${publication.images[0].path}" class="img-fluid" style="width: 200px; height: 200px; object-fit: cover; border-radius: 10px;" alt="Imagen de publicación">`
+                                            ? `<img src="/storage/${publication.images[0].path}" class="img-fluid ml-2 mt-2 mb-2" style="width: 70px; height: 60px; object-fit: cover; border-radius: 10px;" alt="Imagen de publicación">`
                                             : `<img src="ruta/por/defecto.jpg" class="img-fluid rounded-circle" style="width: 100%; height: 100%; object-fit: cover;" alt="Sin imagen">` // Puedes poner una ruta de imagen por defecto
                                     }
                                 </div>

@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image as InterventionImage;
 use Illuminate\Support\Facades\Storage;
+use App\Mail\DailyReport;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class PostController extends Controller
 {
@@ -153,6 +157,7 @@ class PostController extends Controller
             $publications = Post::with('images')
                 ->where('user_id', $userId)
                 ->whereDate('created_at', $date)
+                ->orderBy('created_at', 'desc') 
                 ->get();
     
             // Verificar si hay publicaciones
@@ -177,6 +182,27 @@ class PostController extends Controller
             return response()->json($response);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al obtener publicaciones: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function sendDailyReport()
+    {
+        $today = Carbon::today();
+        
+        // Obtener todos los usuarios
+        $users = User::all();
+    
+        foreach ($users as $user) {
+            // Contar las publicaciones del usuario en el día actual
+            $postCount = Post::where('user_id', $user->id)
+                              ->whereDate('created_at', $today)
+                              ->count();
+            
+            // Verificar si el usuario no ha hecho 6 publicaciones (5 comidas + 1 ejercicio)
+            if ($postCount < 6) {
+                // Enviar el correo electrónico
+                Mail::to($user->email)->send(new DailyReport($user));
+            }
         }
     }
 
