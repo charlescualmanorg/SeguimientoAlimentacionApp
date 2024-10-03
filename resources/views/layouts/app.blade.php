@@ -77,9 +77,10 @@
                                     <a class="dropdown-item" href="{{ route('feed') }}">
                                         {{ __('Feed') }}
                                     </a>
-
                                     
-
+                                    <a class="dropdown-item" href="{{ route('posts.index') }}">
+                                        {{ __('Mi diario') }}
+                                    </a>
 
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
