@@ -10,7 +10,7 @@ class OpenAIService
 
     public function __construct()
     {
-        $this->apiKey = env('OPENAI_API_KEY');
+        $this->apiKey = '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';
     }
 
     public function analyzePostContent($content, $userInfo)
