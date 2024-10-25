@@ -31,7 +31,7 @@ class ProfileController extends Controller
             'age' => 'required|integer|min:0',
             'weight' => 'required|numeric|min:0',
             'height' => 'required|numeric|min:0',
-            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
             'diseases' => 'nullable|array',
             'diseases.*' => 'nullable|string',
         ]);
