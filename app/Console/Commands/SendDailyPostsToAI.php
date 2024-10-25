@@ -77,7 +77,7 @@ class SendDailyPostsToAI extends Command
                     // Crear un comentario automático para la publicación
                     Comment::create([
                         'post_id' => $post->id,
-                        'user_id' => 'IA',  // Comentario del sistema
+                        'user_id' => 0,  // Comentario del sistema
                         'content' => 'Tenemos ayuda para mejorar tu alimentación. Haz clic aquí para más detalles.',
                         'is_system_generated' => true,
                     ]);

@@ -32,7 +32,7 @@ class OpenAIService
             \Log::info($response->json());
             return $response->json();
         }
-dd($response);
+
         return ['error' => 'Error al analizar el contenido con OpenAI'];
     }
 
