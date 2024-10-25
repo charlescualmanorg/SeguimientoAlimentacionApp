@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    protected $fillable = ['user_id', 'content'];
+    protected $fillable = ['user_id', 'content','is_analyzed','ai_response'];
 
     // Relación de un post con varias imágenes
     public function images()

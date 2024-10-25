@@ -176,6 +176,7 @@ class PostController extends Controller
                             'path' => $image->path,
                         ];
                     }),
+                    'is_analyzed' => $publication->is_analyzed,
                 ];
             });
     
@@ -204,6 +205,17 @@ class PostController extends Controller
                 Mail::to($user->email)->send(new DailyReport($user));
             }
         }
+    }
+
+    public function getAIResponse(Post $post)
+    {
+        // Verificar si la publicación ha sido analizada por la IA
+        if (!$post->is_analyzed) {
+            return response()->json(['error' => 'El post aún no ha sido analizado por la IA.'], 400);
+        }
+
+        // Retornar la respuesta de la IA almacenada en el campo `ai_response`
+        return response()->json(['ai_response' => $post->ai_response]);
     }
 
 }
