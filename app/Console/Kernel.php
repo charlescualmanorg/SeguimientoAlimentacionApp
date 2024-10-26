@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('report:daily')->dailyAt('20:00');
-        $schedule->command('posts:send-to-ai')->dailyAt('19:00');
+        $schedule->command('posts:send-to-ai')->everyMinute();
     }
 
     /**
